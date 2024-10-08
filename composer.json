@@ -1,0 +1,15 @@
+{
+    "name": "ofernandoavila/pickup",
+    "autoload": {
+        "psr-4": {
+            "Ofernandoavila\\Pickup\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fernando Avila",
+            "email": "fernandoavilajunior@gmail.com"
+        }
+    ],
+    "require": {}
+}
