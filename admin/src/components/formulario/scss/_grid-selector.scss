@@ -1,0 +1,69 @@
+.grid-selector {
+    min-width: 800px;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .grid-filter {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+    
+        .form-group:has(input) {
+            width: 100%;
+        }
+    }
+
+    .grid-selector-rows {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    
+    .grid-checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .grid-row {
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        .grid-info {
+            padding-left: 8px;
+        }
+
+        .grid-row-actions {
+            margin-left: auto;
+        }
+
+        &:first-of-type {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        &:last-of-type {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        &:has(input:checked) {
+            background-color: #1e90ff;
+            color: #fff;
+
+            .btn {
+                color: #fff;
+            }
+        }
+    }
+
+    .grid-row-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+}

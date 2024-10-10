@@ -1,0 +1,3 @@
+interface ICarregandoSpinner {
+    className?: string;
+}

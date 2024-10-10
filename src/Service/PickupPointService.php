@@ -3,20 +3,34 @@
 namespace Ofernandoavila\Pickup\Service;
 
 use Ofernandoavila\Pickup\Repository\PickupPointRepository;
+use WP_REST_Request;
 
 class PickupPointService {
-    protected PickupPointRepository $repository;
+    public function __construct(
+        protected PickupPointRepository $repository
+    ) { }
 
-    public function __construct()
-    {
-        $this->repository = new PickupPointRepository();
-    }
+    public function getAllPickupPoints($filter) {
+        if(isset($filter) && sizeof($filter) > 0) {
+            return $this->repository->getByFilter($filter);
+        }
 
-    public function getAllPickupPoints() {
         return $this->repository->getAll();
+    }
+    
+    public function getPickupPointByCNPJ(string $cnpj) {
+        return $this->repository->getPickupPointByCNPJ($cnpj);
+    }
+    
+    public function getPickupPointByID(int $id) {
+        return $this->repository->getPickupPointByID($id);
     }
     
     public function getAllPickupPointsActives() {
         return $this->repository->getAllPickupPointsActives();
+    }
+    
+    public function createPickupPoint(array $data) {
+        return $this->repository->save($data);
     }
 }

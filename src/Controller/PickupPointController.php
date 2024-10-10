@@ -7,23 +7,27 @@ use Ofernandoavila\Pickup\Service\PickupPointService;
 use WP_REST_Request;
 
 class PickupPointController extends Controller {
-
-    protected PickupPointService $service;
-
-    public function __construct()
-    {
-        $this->service = new PickupPointService();
-    }
+    public function __construct(
+        protected PickupPointService $service
+    ) {}
 
     public function getAllPickupPointsAvaible(WP_REST_Request $request) {
-        return $this->EnviarResponse(
+        return $this->send_response(
             data: $this->service->getAllPickupPointsActives()
         );
     }
     
     public function getAllPickupPoints(WP_REST_Request $request) {
-        return $this->EnviarResponse(
-            data: $this->service->getAllPickupPoints()
+        $filter = $this->get_params($request);
+
+        return $this->send_response(
+            data: $this->service->getAllPickupPoints($filter)
+        );
+    }
+    
+    public function createPickupPoint(WP_REST_Request $request) {
+        return $this->send_response(
+            data: $this->service->createPickupPoint($this->get_body_content($request)) ? [ "Balcão criado com sucesso!" ] : [ "erro ao criar!" ]
         );
     }
 }

@@ -1,0 +1,38 @@
+.selecao {
+    &-buscavel {
+        position: relative;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &-container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%; 
+            position: absolute; 
+            background-color: #fff; 
+            padding: 0.75rem;
+            padding-bottom: 0;
+            left: 0;
+            top: 0;
+            transform: translateY(2.35rem);
+
+            .selecao-lista {
+                padding: 0px 0.75rem 0.75rem 8px;
+                margin-top: 8px;
+                max-height: 150px;
+                overflow-y: auto;
+
+                .lista-item {
+                    padding: 4px 0px;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: #ccc;
+                    }
+                }
+            }
+        }
+    }
+}

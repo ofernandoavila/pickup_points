@@ -8,11 +8,12 @@ class Router {
 
     public array $routes = [];
 
-    public function register_route(string $route, string $method, $callback) {
+    public function register_route(string $route, string $method, $callback, $validation = null) {
         return $this->routes[] = [
             "route" => $route,
             "method" => $method,
-            "callback" => $callback
+            "callback" => $callback,
+            "validation" => $validation
         ];
     }
 
@@ -21,6 +22,7 @@ class Router {
             register_rest_route("$this->endpoint/$this->version", $rota['route'], array(
                 'methods'  => $rota['method'],
                 'callback' => $rota['callback'],
+                'permission_callback' => $rota['validation'] ?? null
             ));
         }
     }
