@@ -13,3 +13,10 @@ export function StateSelectOption(state: State) : ISelecaoOpcao {
         label: `${state.label}`
     }
 }
+
+export function GetStateSelectOptions(states: State[]) : ISelecaoOpcao[] {
+    let result: ISelecaoOpcao[] = [{ id: 0, label: '-- SELECIONE UMA OPÇÃO --' }];
+    states.map( state => result.push(StateSelectOption(state)));
+
+    return result;
+}

@@ -21,4 +21,24 @@
             cursor: pointer;
         }
     }
+
+    .tabela-filter {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        gap: 16px;
+        
+        .form-group:first-of-type {
+            flex: 3;
+        }
+
+        .form-group:has(select) {
+            flex: 1;
+        }
+        
+        .form-group:has(button) {
+            display: flex;
+            gap: 8px;
+        }
+    }
 }

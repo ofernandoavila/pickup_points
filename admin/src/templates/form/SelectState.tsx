@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Selecao from "../../components/formulario/Selecao";
-import { State, StateSelectOption } from "../../models/State";
+import { GetStateSelectOptions, State, StateSelectOption } from "../../models/State";
 import { StateService } from "../../services/StateService";
 import useGlobal from "../../hooks/useGlobal";
 
@@ -26,6 +26,8 @@ export default function SelectState({ value, setValue, disabled }: ISelectStateP
     }, []);
 
     const HandleSelectState = (id: number) => {
+        if(id === 0) return;
+
         let state = states[states.findIndex(m => m.id === id)];
         return setValue(state);
     }
@@ -33,7 +35,7 @@ export default function SelectState({ value, setValue, disabled }: ISelectStateP
     return (
         <Selecao
             label="State"
-            itens={ states.map( state => StateSelectOption(state) ) }
+            itens={ GetStateSelectOptions(states) }
             value={ value }
             onSelect={ HandleSelectState }
             disabled={ disabled }

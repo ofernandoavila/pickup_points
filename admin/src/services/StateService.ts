@@ -1,3 +1,4 @@
+import { Filter } from "../models/API";
 import { State } from "../models/State";
 import { API } from "./API";
 

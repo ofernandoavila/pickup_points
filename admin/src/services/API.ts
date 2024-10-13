@@ -1,4 +1,4 @@
-import { APIResponse, Pagination, PaginationFilter } from "../models/API";
+import { APIResponse, Filter, Pagination } from "../models/API";
 
 export class API<T, TDTO> {
     protected base_url:string = process.env.REACT_APP_BASE_URL!;
@@ -9,11 +9,11 @@ export class API<T, TDTO> {
         public url: string
     ) { }
 
-    public getAll = (filter?: PaginationFilter) => new Promise<Pagination<T>>((resolve, reject) => {
+    public getAll = (filter?: Filter) => new Promise<Pagination<T>>((resolve, reject) => {
         let url = `/${this.url}/getAll`;
 
         if(filter) {
-            url += `?page=${filter.page}&perPage=${filter.perPage}`;
+            url += `?${this.__convertFilter(filter)}`;
         }
 
         fetch( this.base_url + url, {
@@ -56,4 +56,27 @@ export class API<T, TDTO> {
                 resolve(data.data[0] as string);
             } );
     });
+
+    public __convertFilter(filter: Filter) {
+        let url = '?';
+        let filters = [];
+
+        if(filter.page) {
+            filters.push(`perPage=${filter.perPage}`);
+        }
+        
+        if(filter.page) {
+            filters.push(`page=${filter.page}`);
+        }
+        
+        if(filter.orderBy) {
+            filters.push(`orderBy=${filter.orderBy}`);
+        }
+        
+        if(filter.desc) {
+            filters.push(`desc=${filter.desc}`);
+        }
+
+        return filters.join('&');
+    }
 }

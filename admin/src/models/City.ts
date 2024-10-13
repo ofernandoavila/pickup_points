@@ -1,4 +1,5 @@
 import { ISelecaoOpcao } from "../components/formulario/types";
+import { Filter } from "./API";
 import { State } from "./State";
 
 export interface City {
@@ -14,6 +15,11 @@ export interface CityDTO {
     id?: number;
     label: string;
     state_id: number;
+}
+
+export interface CityFilter extends Filter {
+    label?: string;
+    state_id?: number;
 }
 
 export function CitySelectOption(city: City) : ISelecaoOpcao {

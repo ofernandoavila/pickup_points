@@ -15,3 +15,10 @@ export interface PaginationFilter {
     page: number;
     perPage: number;
 }
+
+export interface Filter {
+    orderBy?: string;
+    desc?: boolean;
+    page?: number;
+    perPage?: number;
+}

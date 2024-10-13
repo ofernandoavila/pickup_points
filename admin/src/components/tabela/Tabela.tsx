@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Botao, { IBotaoStyleType } from "../formulario/Botao";
 import "./_table.scss";
 import { DateParaString } from "../../utils/Date";
 import TabelaHeader from "./TabelaHeader";
-import { Pagination, PaginationFilter } from "../../models/API";
+import { Filter, Pagination, PaginationFilter } from "../../models/API";
+import SelectState from "../../templates/form/SelectState";
 
 export type TabelaCamposHeader = string[];
 type Evento<T> = (item: T) => void;
@@ -19,8 +20,8 @@ export interface IEvento<T> {
 }
 
 interface TabelaProps<T> {
-    fetch: (filter: PaginationFilter) => void;
-    pagination?: Pagination<T>;
+    fetch: () => void;
+    pagination?: Pagination<T> | null;
     titulo: string;
     campos: TabelaCamposHeader;
     primeiroCampo?: "numerico" | "guid";
@@ -29,6 +30,9 @@ interface TabelaProps<T> {
 
     newButton?: JSX.Element;
     eventos?: IEvento<T>[];
+    isCarregando?: boolean;
+    filter?: JSX.Element;
+    setFilter: React.Dispatch<React.SetStateAction<Filter>>;
 }
 
 export default function Tabela<T>({
@@ -40,7 +44,10 @@ export default function Tabela<T>({
     primeiroCampo,
     newButton,
     pagination,
-    fetch
+    fetch,
+    isCarregando,
+    filter,
+    setFilter
 }: TabelaProps<T>) {
     const [chavesObj, setChavesObj] = useState<(keyof T)[]>([]);
     const [pageNumbers, setPageNumbers] = useState<JSX.Element[]>([]);
@@ -61,6 +68,17 @@ export default function Tabela<T>({
         }
     };
 
+    const HandleChagenPage = (pageNumber: number) => {
+        setFilter(prev => {
+            return {
+                ...prev,
+                page: pageNumber
+            }
+        });
+
+        fetch();
+    }
+
     useEffect(() => {
         renderizarTabela();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +89,7 @@ export default function Tabela<T>({
             let tmp:JSX.Element[] = [];
             setPageNumbers([]);
             for(let i = 1; i <= pagination.totalPages; i++) {
-                tmp.push(<li className="page-item"><a className={`page-link ${ i == pagination.page ? 'active' : '' }`} onClick={e => fetch({ page: i, perPage: 10 })}>{ i }</a></li>);
+                tmp.push(<li className="page-item"><a className={`page-link ${ i == pagination.page ? 'active' : '' }`} onClick={e => HandleChagenPage(i)}>{ i }</a></li>);
             }
 
             setPrevPage((pagination.page - 1) > 0 ? (pagination.page - 1) : pagination.page);
@@ -81,112 +99,107 @@ export default function Tabela<T>({
         }
     }, [pagination]);
 
-    if (itens === undefined) return <></>;
-
-    if (itens.length === 0) return (
-        <div className="tabela">
-            <TabelaHeader titulo={ titulo } newButton={newButton} />
-            <div className="tabela-wrapper">
-                <p className="alerta">Não há dados para exbição.</p>
-            </div>
-        </div>
-    );
-
     return (
         <div className="tabela">
             <TabelaHeader titulo={ titulo } newButton={newButton} />
-            <div className="tabela-wrapper">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            {campos.map((campo, index) => {
-                                if (index === 0 && primeiroCampo) {
-                                    return (
-                                        <th
-                                            scope="col"
-                                            className="avatar"
-                                            key={index}
-                                        >
-                                            {campo}
-                                        </th>
-                                    );
-                                }
-
-                                return (
-                                    <th scope="col" key={index}>
-                                        {campo}
-                                    </th>
-                                );
-                            })}
-                            { eventos ? ( <th>Actions</th> ) : '' } 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { itens.map((item: T, index) => (
-                            <tr key={index}>
-                                {chavesObj.map((chave, index) => {
-                                    if (index === 0 && primeiroCampo) {
-                                        if (primeiroCampo === "guid") {
+            { filter }
+            { itens ? (
+                <div className="tabela-wrapper">
+                    { itens.length > 0 ? (
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    {campos.map((campo, index) => {
+                                        if (index === 0 && primeiroCampo) {
                                             return (
-                                                <td key={index}>
-                                                    <div className="avatar-placeholder"></div>
-                                                </td>
+                                                <th
+                                                    scope="col"
+                                                    className="avatar"
+                                                    key={index}
+                                                >
+                                                    {campo}
+                                                </th>
                                             );
                                         }
 
                                         return (
-                                            <td key={index}>
-                                                <div className="avatar-placeholder">
-                                                    {item[chave] as string}
-                                                </div>
-                                            </td>
+                                            <th scope="col" key={index}>
+                                                {campo}
+                                            </th>
                                         );
-                                    }
+                                    })}
+                                    { eventos ? ( <th>Actions</th> ) : '' } 
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { itens.map((item: T, index) => (
+                                    <tr key={index}>
+                                        {chavesObj.map((chave, index) => {
+                                            if (index === 0 && primeiroCampo) {
+                                                if (primeiroCampo === "guid") {
+                                                    return (
+                                                        <td key={index}>
+                                                            <div className="avatar-placeholder"></div>
+                                                        </td>
+                                                    );
+                                                }
 
-                                    if (
-                                        chave === "data" ||
-                                        chave === "created_at" ||
-                                        chave === "dataMatricula"
-                                    ) {
-                                        return (
-                                            <td key={index}>
-                                                { DateParaString(new Date(item[chave] as string)) }
-                                            </td>
-                                        );
-                                    }
-
-                                    return (
-                                        <td key={index}>
-                                            {item[chave] as string}
-                                        </td>
-                                    );
-                                })}
-                                {
-                                    eventos ? (
-                                        <td className="table-actions">
-                                            {
-                                                eventos?.map( evento => (
-                                                    <Botao
-                                                        estilo={ evento.options?.estiloBotao ?? 'default' }
-                                                        label={ evento.options?.icon ? <><i className={`${evento.options.icon} mx-2`}></i>{ evento.label }</> : evento.label }
-                                                        onClick={ e => evento.callback(item) }
-                                                    />
-                                                ))
+                                                return (
+                                                    <td key={index}>
+                                                        <div className="avatar-placeholder">
+                                                            {item[chave] as string}
+                                                        </div>
+                                                    </td>
+                                                );
                                             }
-                                        </td>
-                                    ) : ''
-                                }
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+
+                                            if (
+                                                chave === "data" ||
+                                                chave === "created_at" ||
+                                                chave === "dataMatricula"
+                                            ) {
+                                                return (
+                                                    <td key={index}>
+                                                        { DateParaString(new Date(item[chave] as string)) }
+                                                    </td>
+                                                );
+                                            }
+
+                                            return (
+                                                <td key={index}>
+                                                    {item[chave] as string}
+                                                </td>
+                                            );
+                                        })}
+                                        {
+                                            eventos ? (
+                                                <td className="table-actions">
+                                                    {
+                                                        eventos?.map( evento => (
+                                                            <Botao
+                                                                estilo={ evento.options?.estiloBotao ?? 'default' }
+                                                                label={ evento.options?.icon ? <><i className={`${evento.options.icon} mx-2`}></i>{ evento.label }</> : evento.label }
+                                                                onClick={ e => evento.callback(item) }
+                                                            />
+                                                        ))
+                                                    }
+                                                </td>
+                                            ) : ''
+                                        }
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : isCarregando ? ( <p className="alerta">Carregando...</p> ) : <p className="alerta">Não há dados para exbição.</p> }
+                </div>
+            ) : isCarregando ? ( <p className="alerta">Carregando...</p> ) : <p className="alerta">Não há dados para exbição.</p> }
+
             { pagination ? (
                 <nav className="tabela-pagination">
                     <ul className="pagination">
-                        <li className="page-item"><a className="page-link" onClick={ e => (pagination.page - 1) > 0 ? fetch({ page: prevPage, perPage: 10 }) : ''}>Previous</a></li>
+                        <li className="page-item"><a className="page-link" onClick={ e => (pagination.page - 1) > 0 ? HandleChagenPage(prevPage) : ''}>Previous</a></li>
                         { pageNumbers.map(item => item) }
-                        <li className="page-item"><a className="page-link" onClick={ e => (pagination.page + 1) <= pagination.totalPages ? fetch({ page: nextPage, perPage: 10 }) : ''}>Next</a></li>
+                        <li className="page-item"><a className="page-link" onClick={ e => (pagination.page + 1) <= pagination.totalPages ? HandleChagenPage(nextPage) : ''}>Next</a></li>
                     </ul>
                 </nav>
             ) : '' }
