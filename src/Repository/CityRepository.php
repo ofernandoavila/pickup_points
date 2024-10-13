@@ -50,7 +50,7 @@ class CityRepository extends Repository implements IInstallDB {
     {
         $query = "SELECT * FROM $this->table_name";
         $conditions = [];
-        
+
         if(isset($filter['label'])) {
             $conditions[] = "label LIKE '%" . $filter['label'] . "%'";
         }
@@ -80,7 +80,25 @@ class CityRepository extends Repository implements IInstallDB {
         } else {
             $query .= " ORDER BY state_id ASC";
         }
+        
+        if(isset($filter['perPage'])) {
+            $query .= " LIMIT " . $filter['perPage'];
+        } else {
+            $query .= " LIMIT 10";
+        }
 
+        if(isset($filter['page'])) {           
+            $offset = isset($filter['perPage']) ? intval($filter['perPage']) * intval($filter['page']) : intval($filter['page']) * 10;
+
+            if(intval($filter['page']) == 1) {
+                $offset = 0;
+            } else if(intval($filter['page']) == 2) {
+                $offset = isset($filter['perPage']) ? intval($filter['perPage']) : 10;
+            }
+
+            $query .= " OFFSET $offset";
+        }
+        
         $result = [];
 
         foreach($this->db->get_results($query, ARRAY_A) as $row) {
@@ -92,6 +110,21 @@ class CityRepository extends Repository implements IInstallDB {
             $result[] = $city;
         }
 
-        return $result;
+        $totalPages = 0;
+
+        if(isset($filter['perPage'])) {
+            $totalPages = $this->getCount() / intval($filter['perPage']);
+
+            if($this->getCount() % intval($filter['perPage']) > 0) {
+                $totalPages++;
+            }
+        }
+
+        return [
+            'page' => isset($filter['page']) ? intval($filter['page']) : 1,
+            'perPage' => isset($filter['perPage']) ? intval($filter['perPage']) : 10,
+            'totalPages' => intval($totalPages),
+            'data' => $result,
+        ];
     }
 }
