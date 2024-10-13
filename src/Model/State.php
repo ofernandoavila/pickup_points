@@ -2,7 +2,9 @@
 
 namespace Ofernandoavila\Pickup\Model;
 
-class State {
+use Ofernandoavila\Pickup\Core\Model;
+
+class State extends Model {
     
     public function __construct(
         public ?int $id = null,
@@ -20,9 +22,5 @@ class State {
             abbreviation: $data['abbreviation'],
             active: $data['active'] ?? true,
         );
-    }
-
-    public function to_array() {
-        return array_filter(json_decode(json_encode($this), true), fn($value) => $value !== null );
     }
 }

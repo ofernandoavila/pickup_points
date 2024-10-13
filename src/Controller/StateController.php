@@ -2,20 +2,17 @@
 
 namespace Ofernandoavila\Pickup\Controller;
 
+use Ofernandoavila\Pickup\Core\Container;
 use Ofernandoavila\Pickup\Core\Controller;
 use Ofernandoavila\Pickup\Service\StateService;
-use WP_REST_Request;
 
 class StateController extends Controller {
+    private StateService $service;
+    
     public function __construct(
-        protected StateService $service
-    ) {}
-
-    public function getAllStates(WP_REST_Request $request) {
-        $filter = $this->get_params($request);
-
-        return $this->send_response(
-            data: $this->service->getAllStates($filter)
-        );
+        protected Container $container
+    ) { 
+        $this->service = $this->container->resolve(StateService::class);
+        parent::__construct($this->service);
     }
 }

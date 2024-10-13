@@ -2,7 +2,9 @@
 
 namespace Ofernandoavila\Pickup\Model;
 
-class City {
+use Ofernandoavila\Pickup\Core\Model;
+
+class City extends Model {
     
     public function __construct(
         public ?int $id = null,
@@ -17,13 +19,9 @@ class City {
         if(empty($data) || !isset($data)) throw new \Exception('The argument cannot be empty or null');
     
         return new City(
-            id: $data['id'] ? intval($data['id']) : null,
+            id: isset($data['id']) ? intval($data['id']) : null,
             state_id: intval($data['state_id']),
             label: $data['label']
         );
-    }
-
-    public function to_array() {
-        return json_decode(json_encode($this), true);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Ofernandoavila\Pickup\Model;
 
-class PickupPoint {
+use Ofernandoavila\Pickup\Core\Model;
+
+class PickupPoint extends Model {
 
     public function __construct(
         public ?int $id = null,
@@ -39,9 +41,5 @@ class PickupPoint {
             observation: $data['observation'] ?? null,
             active: $data['active'] ?? true,
         );
-    }
-
-    public function to_array() {
-        return array_filter(json_decode(json_encode($this), true), fn($value) => $value !== null );
     }
 }

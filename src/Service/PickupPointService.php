@@ -3,7 +3,6 @@
 namespace Ofernandoavila\Pickup\Service;
 
 use Ofernandoavila\Pickup\Repository\PickupPointRepository;
-use WP_REST_Request;
 
 class PickupPointService {
     public function __construct(

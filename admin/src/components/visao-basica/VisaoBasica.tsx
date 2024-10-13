@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import './_visao-basica.scss';
 import { IVisaoBasicaProps } from './types';
+import Modal from '../modal/Modal';
 
 export default function VisaoBasica({ children }: IVisaoBasicaProps) {
     return (
         <div id="visao-basica">
+            <Modal />
             <header>
                 <div className="navbar navbar-expand-lg bg-body-tertiary">
                     <div className="container">

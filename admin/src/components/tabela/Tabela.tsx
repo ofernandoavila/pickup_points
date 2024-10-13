@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Botao, { IBotaoStyleType } from "../formulario/Botao";
 import "./_table.scss";
 import { DateParaString } from "../../utils/Date";
+import TabelaHeader from "./TabelaHeader";
 
 export type TabelaCamposHeader = string[];
 type Evento<T> = (item: T) => void;
@@ -23,6 +24,7 @@ interface TabelaProps<T> {
     chaves?: (keyof T)[];
     itens: T[];
 
+    newButton?: JSX.Element;
     eventos?: IEvento<T>[];
 }
 
@@ -33,6 +35,7 @@ export default function Tabela<T>({
     chaves,
     eventos,
     primeiroCampo,
+    newButton
 }: TabelaProps<T>) {
     const [chavesObj, setChavesObj] = useState<(keyof T)[]>([]);
 
@@ -59,7 +62,7 @@ export default function Tabela<T>({
 
     if (itens.length === 0) return (
         <div className="tabela">
-            <h3 className="titulo">{ titulo }</h3>
+            <TabelaHeader titulo={ titulo } newButton={newButton} />
             <div className="tabela-wrapper">
                 <p className="alerta">Não há dados para exbição.</p>
             </div>
@@ -68,7 +71,7 @@ export default function Tabela<T>({
 
     return (
         <div className="tabela">
-            <h3 className="titulo">{ titulo }</h3>
+            <TabelaHeader titulo={ titulo } newButton={newButton} />
             <div className="tabela-wrapper">
                 <table className="table">
                     <thead>
@@ -92,11 +95,11 @@ export default function Tabela<T>({
                                     </th>
                                 );
                             })}
-                            { eventos ? ( <th></th> ) : '' } 
+                            { eventos ? ( <th>Actions</th> ) : '' } 
                         </tr>
                     </thead>
                     <tbody>
-                        {itens.map((item: T, index) => (
+                        { itens.map((item: T, index) => (
                             <tr key={index}>
                                 {chavesObj.map((chave, index) => {
                                     if (index === 0 && primeiroCampo) {

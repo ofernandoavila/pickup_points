@@ -37,6 +37,14 @@ class CityRepository extends Repository implements IInstallDB {
     public function save(array $data) {
         return $this->db->insert($this->table_name, City::Map($data)->to_array());
     }
+    
+    public function update(array $data) {
+        return $this->db->update( $this->table_name, City::Map($data)->to_array(), array( 'id' => $data['id'] ) );
+    }
+
+    public function checkIfExists(string $city, int $state_id) {    
+        return sizeof($this->db->get_results("SELECT * FROM $this->table_name WHERE state_id = $state_id AND label LIKE '%$city'", ARRAY_A)) > 0;
+    }
 
     public function getAll(array $filter = [])
     {
@@ -58,7 +66,7 @@ class CityRepository extends Repository implements IInstallDB {
 
         if(sizeof($conditions) > 0) {
             $terms = implode(' AND ', $conditions);
-            $query .= " WHERE " . $terms . ';';
+            $query .= " WHERE " . $terms;
         }
 
         if(isset($filter['orderBy'])) {

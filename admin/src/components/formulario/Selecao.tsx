@@ -27,6 +27,7 @@ export default function Selecao(props: ISelecaoProps) {
             setListaOriginal(props.itens);
             setLista(props.itens);
         }
+        // eslint-disable-next-line
     }, [props.itens]);
 
     function HandleSelecionarItem(item: ISelecaoOpcao) {
@@ -37,7 +38,7 @@ export default function Selecao(props: ISelecaoProps) {
     }
 
     function FiltroLista(termo: string) {
-        if(termo == "") return setLista(listaOriginal);
+        if(termo === "") return setLista(listaOriginal);
         else {
             return setLista(listaOriginal.filter( l => l.label.toLowerCase().includes(termo.toLowerCase())));
         }

@@ -11,8 +11,15 @@ trait RequestHandleTrait {
         return $request->get_params();
     }
 
-    protected function send_response(array $data = [], int $statusCode = 200) {
-        return new \WP_REST_Response($data, $statusCode);
+    protected function send_response(array $data = [], string $message = '', int $statusCode = 200) {
+
+        $response = [
+            "code" => $statusCode,
+            "message" => $message,
+            "data" => $data
+        ];
+
+        return new \WP_REST_Response($response, $statusCode);
     }
 
     protected function send_error(string $message, array $errors = []) {

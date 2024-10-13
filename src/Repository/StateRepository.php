@@ -56,7 +56,7 @@ class StateRepository extends Repository implements IInstallDB {
         return State::Map($result);
     }
 
-    public function getByFilter(array $filter) {
+    public function getAll(array $filter = []) {
         $query = "SELECT * FROM $this->table_name";
         $conditions = [];
         

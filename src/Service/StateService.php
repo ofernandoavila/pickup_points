@@ -2,19 +2,12 @@
 
 namespace Ofernandoavila\Pickup\Service;
 
+use Ofernandoavila\Pickup\Core\Container;
+use Ofernandoavila\Pickup\Core\Service;
 use Ofernandoavila\Pickup\Repository\StateRepository;
-use WP_REST_Request;
 
-class StateService {
+class StateService extends Service {
     public function __construct(
-        protected StateRepository $repository
-    ) { }
-
-    public function getAllStates($filter) {
-        if(isset($filter) && sizeof($filter) > 0) {
-            return $this->repository->getByFilter($filter);
-        }
-
-        return $this->repository->getAll();
-    }
+        private Container $container
+    ) { parent::__construct($this->container->resolve(StateRepository::class)); }
 }
