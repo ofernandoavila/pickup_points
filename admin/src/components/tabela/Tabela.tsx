@@ -3,6 +3,7 @@ import Botao, { IBotaoStyleType } from "../formulario/Botao";
 import "./_table.scss";
 import { DateParaString } from "../../utils/Date";
 import TabelaHeader from "./TabelaHeader";
+import { Pagination, PaginationFilter } from "../../models/API";
 
 export type TabelaCamposHeader = string[];
 type Evento<T> = (item: T) => void;
@@ -18,6 +19,8 @@ export interface IEvento<T> {
 }
 
 interface TabelaProps<T> {
+    fetch: (filter: PaginationFilter) => void;
+    pagination?: Pagination<T>;
     titulo: string;
     campos: TabelaCamposHeader;
     primeiroCampo?: "numerico" | "guid";
@@ -35,12 +38,17 @@ export default function Tabela<T>({
     chaves,
     eventos,
     primeiroCampo,
-    newButton
+    newButton,
+    pagination,
+    fetch
 }: TabelaProps<T>) {
     const [chavesObj, setChavesObj] = useState<(keyof T)[]>([]);
+    const [pageNumbers, setPageNumbers] = useState<JSX.Element[]>([]);
+    const [prevPage, setPrevPage] = useState<number>( 1 );
+    const [nextPage, setNextPage] = useState<number>( 1 );
 
     const renderizarTabela = () => {
-        if (itens.length > 0) {
+        if (itens && itens.length > 0) {
             const keys = Object.keys(itens[0] as object);
 
             keys.splice(keys.indexOf("id"), 1);
@@ -57,6 +65,21 @@ export default function Tabela<T>({
         renderizarTabela();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itens]);
+
+    useEffect(() => {
+        if(pagination) {
+            let tmp:JSX.Element[] = [];
+            setPageNumbers([]);
+            for(let i = 1; i <= pagination.totalPages; i++) {
+                tmp.push(<li className="page-item"><a className={`page-link ${ i == pagination.page ? 'active' : '' }`} onClick={e => fetch({ page: i, perPage: 10 })}>{ i }</a></li>);
+            }
+
+            setPrevPage((pagination.page - 1) > 0 ? (pagination.page - 1) : pagination.page);
+            setNextPage((pagination.page + 1) < pagination.totalPages ? (pagination.page + 1) : pagination.totalPages);
+
+            setPageNumbers(tmp);
+        }
+    }, [pagination]);
 
     if (itens === undefined) return <></>;
 
@@ -158,6 +181,15 @@ export default function Tabela<T>({
                     </tbody>
                 </table>
             </div>
+            { pagination ? (
+                <nav className="tabela-pagination">
+                    <ul className="pagination">
+                        <li className="page-item"><a className="page-link" onClick={ e => (pagination.page - 1) > 0 ? fetch({ page: prevPage, perPage: 10 }) : ''}>Previous</a></li>
+                        { pageNumbers.map(item => item) }
+                        <li className="page-item"><a className="page-link" onClick={ e => (pagination.page + 1) <= pagination.totalPages ? fetch({ page: nextPage, perPage: 10 }) : ''}>Next</a></li>
+                    </ul>
+                </nav>
+            ) : '' }
         </div>
     );
 }

@@ -81,23 +81,7 @@ class CityRepository extends Repository implements IInstallDB {
             $query .= " ORDER BY state_id ASC";
         }
         
-        if(isset($filter['perPage'])) {
-            $query .= " LIMIT " . $filter['perPage'];
-        } else {
-            $query .= " LIMIT 10";
-        }
-
-        if(isset($filter['page'])) {           
-            $offset = isset($filter['perPage']) ? intval($filter['perPage']) * intval($filter['page']) : intval($filter['page']) * 10;
-
-            if(intval($filter['page']) == 1) {
-                $offset = 0;
-            } else if(intval($filter['page']) == 2) {
-                $offset = isset($filter['perPage']) ? intval($filter['perPage']) : 10;
-            }
-
-            $query .= " OFFSET $offset";
-        }
+        $query .= $this->get_paginated($filter);
         
         $result = [];
 
@@ -110,15 +94,7 @@ class CityRepository extends Repository implements IInstallDB {
             $result[] = $city;
         }
 
-        $totalPages = 0;
-
-        if(isset($filter['perPage'])) {
-            $totalPages = $this->getCount() / intval($filter['perPage']);
-
-            if($this->getCount() % intval($filter['perPage']) > 0) {
-                $totalPages++;
-            }
-        }
+        $totalPages = $this->get_pagination_total_pages($filter);
 
         return [
             'page' => isset($filter['page']) ? intval($filter['page']) : 1,

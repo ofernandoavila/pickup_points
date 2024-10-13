@@ -78,12 +78,21 @@ class StateRepository extends Repository implements IInstallDB {
             $query .= " WHERE " . $terms . ';';
         }
 
+        if(sizeof($filter) > 0) {
+            $query .= $this->get_paginated($filter);
+        }
+
         $result = [];
 
         foreach($this->db->get_results($query, ARRAY_A) as $row) {
             $result[] = State::Map($row);
         }
 
-        return $result;
+        return [
+            'page' => isset($filter['page']) ? intval($filter['page']) : 1,
+            'perPage' => isset($filter['perPage']) ? intval($filter['perPage']) : 10,
+            'totalPages' => $this->get_pagination_total_pages($filter),
+            'data' => $result,
+        ];
     }
 }

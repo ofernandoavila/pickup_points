@@ -1,4 +1,4 @@
-import { APIResponse } from "../models/API";
+import { APIResponse, Pagination, PaginationFilter } from "../models/API";
 
 export class API<T, TDTO> {
     protected base_url:string = process.env.REACT_APP_BASE_URL!;
@@ -9,11 +9,17 @@ export class API<T, TDTO> {
         public url: string
     ) { }
 
-    public getAll = () => new Promise<T[]>((resolve, reject) => {
-        fetch( this.base_url + `/${this.url}/getAll`, {
+    public getAll = (filter?: PaginationFilter) => new Promise<Pagination<T>>((resolve, reject) => {
+        let url = `/${this.url}/getAll`;
+
+        if(filter) {
+            url += `?page=${filter.page}&perPage=${filter.perPage}`;
+        }
+
+        fetch( this.base_url + url, {
             method: 'get'
         } ).then( result => {
-            return result.json() as Promise<APIResponse<T>>;
+            return result.json() as Promise<APIResponse<Pagination<T>>>;
         } )
             .then( data => {
                 resolve(data.data);

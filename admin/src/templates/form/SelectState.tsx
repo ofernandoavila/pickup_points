@@ -21,7 +21,7 @@ export default function SelectState({ value, setValue, disabled }: ISelectStateP
     useEffect(() => {
         container.resolve<StateService>('state')
                     .getAll()
-                    .then( data => setStates(data));
+                    .then( result => setStates(result.data));
 
     }, []);
 

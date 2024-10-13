@@ -9,9 +9,11 @@ import useModal from "../components/modal/useModal";
 import useGlobal from "../hooks/useGlobal";
 import CityModal from "../templates/CityModal";
 import ModalConfirmar from "../components/modal/modais/ModalConfirmar";
+import { Pagination, PaginationFilter } from "../models/API";
 
 export default function Settings() {
     const [estados, setEstados] = useState<State[]>([]);
+    const [paginatedCities, setPaginatedCities] = useState<Pagination<City>>({} as Pagination<City>);
     const [cidades, setCidades] = useState<City[]>([]);
 
     const { modalOpen } = useModal();
@@ -24,16 +26,16 @@ export default function Settings() {
         fetchCities();
     }, []);
 
-    const fetchCities = () => {
+    const fetchCities = (filter?: PaginationFilter) => {
         return cityService
-                .getAll()
-                .then( data => setCidades(data) );
+                .getAll(filter ?? { page: 1, perPage: 10 })
+                .then( result => setPaginatedCities(result) );
     }
     
     const fetchStates = () => {
         container.resolve<StateService>('state')
                 .getAll()
-                .then( data => setEstados(data) );
+                .then( result => setEstados(result.data) );
     }
 
     return (
@@ -50,10 +52,12 @@ export default function Settings() {
             </section>
             <section>
                 <Tabela<City>
+                    fetch={fetchCities}
                     titulo="Cities"
+                    pagination={paginatedCities}
                     campos={[ "Name", "State" ]}
                     chaves={[ "label", "state_name" ]}
-                    itens={ cidades }
+                    itens={ paginatedCities.data }
                     newButton={<button onClick={ e => modalOpen(<CityModal fetch={ fetchCities } />, true)} className={'btn btn-primary'}>Adicionar Cidade</button>}
                     eventos={[
                         { label: 'Editar', callback: (cidade) => { modalOpen(<CityModal city={cidade} fetch={ fetchCities } />, true) }, options: { estiloBotao: "primario" } },
