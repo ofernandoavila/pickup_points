@@ -75,7 +75,7 @@ class StateRepository extends Repository implements IInstallDB {
 
         if(sizeof($conditions) > 0) {
             $terms = implode(' AND ', $conditions);
-            $query .= " WHERE " . $terms . ';';
+            $query .= " WHERE " . $terms;
         }
 
         if(sizeof($filter) > 0) {

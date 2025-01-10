@@ -60,14 +60,6 @@ export default function Settings() {
             <h1 className="py-2">Settings</h1>
             <hr />
             <section>
-                {/* <Tabela<State>
-                    titulo="Estados"
-                    campos={["Nome", "Abreviação"]}
-                    chaves={["label", "abbreviation"]}
-                    itens={ estados }
-                /> */}
-            </section>
-            <section>
                 <Tabela<City>
                     setFilter={setFilter}
                     filter={ <CityFilter fetch={fetchCities} filter={filter} setFilter={setFilter} /> }
@@ -80,8 +72,8 @@ export default function Settings() {
                     itens={ paginatedCities?.data ?? [] }
                     newButton={<button onClick={ e => modalOpen(<CityModal fetch={ fetchCities } />, true)} className={'btn btn-primary'}>Adicionar Cidade</button>}
                     eventos={[
-                        { label: 'Editar', callback: (cidade) => { modalOpen(<CityModal city={cidade} fetch={ fetchCities } />, true) }, options: { estiloBotao: "primario" } },
-                        { label: 'Excluir', callback: (cidade) => { modalOpen(<ModalConfirmar onConfirmarCallback={ () => cityService.delete(cidade).then(() => fetchCities()) } mensagem={`Tem certeza de que deseja remover '${ cidade.label }'?`} />, true) }, options: { estiloBotao: "perigo" } }
+                        { label: 'Editar', callback: (cidade) => { modalOpen(<CityModal city={cidade} fetch={ fetchCities } />, true) }, options: { estiloBotao: 'primary' } },
+                        { label: 'Excluir', callback: (cidade) => { modalOpen(<ModalConfirmar onConfirmarCallback={ () => cityService.delete(cidade).then(() => fetchCities()) } mensagem={`Tem certeza de que deseja remover '${ cidade.label }'?`} />, true) }, options: { estiloBotao: "danger" } }
                     ]}
                 />
             </section>

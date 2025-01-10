@@ -8,7 +8,7 @@ export default function VisaoBasica({ children }: IVisaoBasicaProps) {
         <div id="visao-basica">
             <Modal />
             <header>
-                <div className="navbar navbar-expand-lg bg-body-tertiary">
+                <div className="navbar navbar-expand-lg bg-body-tertiary w-100">
                     <div className="container">
                         <div className="d-flex justify-content-between align-items-center">
                             <Link to={'/'} className='navbar-brand'>Pickup Points</Link>

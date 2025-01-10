@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CityFilter as Filter } from "../../models/City";
 import SelectState from "./SelectState";
+import { Button, Text } from "avilalab-elements/main";
 
 interface CityFilterProps {
     filter: Filter;
@@ -30,14 +31,23 @@ export default function CityFilter({ fetch, filter, setFilter }: CityFilterProps
 
     return (
         <div className="tabela-filter">
-            <div className="form-group">
-                <label htmlFor="" className="form-label">City name</label>
-                <input type="text" className="form-control" onChange={e => setLabel(e.target.value)} value={label} />
-            </div>
+            <Text
+                label="City name"
+                value={ label }
+                onChange={ e => setLabel(e.target.value) }
+            />
             <SelectState setValue={(value) => setStateId(value.id)} value={state_id} />
             <div className="form-group">
-                <button className="btn btn-secondary" onClick={HandleCleanFilter}>Limpar filtros</button>
-                <button className="btn btn-primary" onClick={HandleSearch}>Filtrar</button>
+                <Button
+                    label="Clean filters"
+                    onClick={HandleCleanFilter}
+                    color="secondary"
+                />
+                <Button
+                    label="Filter"
+                    onClick={HandleSearch}
+                    color="primary"
+                />
             </div>
         </div>
     );

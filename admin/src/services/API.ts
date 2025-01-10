@@ -1,7 +1,7 @@
 import { APIResponse, Filter, Pagination } from "../models/API";
 
 export class API<T, TDTO> {
-    protected base_url:string = process.env.REACT_APP_BASE_URL!;
+    protected base_url:string = import.meta.env.VITE_BASE_URL!;
 
     protected __headers = new Headers();
 

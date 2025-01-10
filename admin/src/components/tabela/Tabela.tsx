@@ -4,7 +4,8 @@ import "./_table.scss";
 import { DateParaString } from "../../utils/Date";
 import TabelaHeader from "./TabelaHeader";
 import { Filter, Pagination, PaginationFilter } from "../../models/API";
-import SelectState from "../../templates/form/SelectState";
+import { Button } from "avilalab-elements/main";
+import { ButtonColorType } from "avilalab-elements/src/components/buttons/types";
 
 export type TabelaCamposHeader = string[];
 type Evento<T> = (item: T) => void;
@@ -15,7 +16,7 @@ export interface IEvento<T> {
 
     options?: {
         icon?: string;
-        estiloBotao?: IBotaoStyleType;
+        estiloBotao?: ButtonColorType;
     }
 }
 
@@ -176,9 +177,9 @@ export default function Tabela<T>({
                                                 <td className="table-actions">
                                                     {
                                                         eventos?.map( evento => (
-                                                            <Botao
-                                                                estilo={ evento.options?.estiloBotao ?? 'default' }
-                                                                label={ evento.options?.icon ? <><i className={`${evento.options.icon} mx-2`}></i>{ evento.label }</> : evento.label }
+                                                            <Button
+                                                                color={ evento.options?.estiloBotao }                                                                
+                                                                label={ evento.label }
                                                                 onClick={ e => evento.callback(item) }
                                                             />
                                                         ))
